@@ -1,0 +1,29 @@
+name: Keep App Alive
+
+on:
+  schedule:
+    # Runs every 4 hours (cron: minute hour day month day-of-week)
+    - cron: '0 */4 * * *'
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  keep_alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping app to keep it awake
+        run: |
+          # Replace YOUR_APP_URL with your actual deployed app URL
+          # For Streamlit Cloud: https://narendrayusuf-algorithmic-analysis.streamlit.app/
+          # For other hosting: use your actual URL
+          APP_URL="https://narendrayusuf-algorithmic-analysis.streamlit.app/"
+
+          echo "Pinging $APP_URL to keep app alive..."
+          response=$(curl -s -o /dev/null -w "%{http_code}" "$APP_URL")
+
+          if [ "$response" = "200" ] || [ "$response" = "302" ] || [ "$response" = "301" ]; then
+            echo "✓ App is alive! HTTP status: $response"
+          else
+            echo "⚠ Warning: Received HTTP status: $response"
+            # Don't fail the workflow - just log it
+          fi

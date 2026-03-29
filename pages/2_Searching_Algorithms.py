@@ -33,7 +33,10 @@ with col_viz:
     if "search_steps" in st.session_state:
         steps = st.session_state["search_steps"]
         total = len(steps)
-        step_idx = st.slider("Step", 0, max(total - 1, 0), 0, key="search_slider")
+        if total > 1:
+            step_idx = st.slider("Step", 0, total - 1, 0, key="search_slider")
+        else:
+            step_idx = 0
 
         current = get_step(steps, step_idx)
         arr = current.get("array", [])
